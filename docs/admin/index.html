@@ -5,11 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
     <title>内容管理</title>
+    <!-- 1. 引入 Netlify Identity Widget（修复空白页的关键） -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <!-- 2. 引入 Decap CMS -->
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   </head>
   <body>
+    <!-- Decap CMS 会自动读取 config.yml 并初始化 -->
     <script>
-      // Decap CMS 会在此自动初始化，读取同目录下的 config.yml
+      // 3. 登录成功后自动跳转回 /admin/，防止白屏
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on("init", function(user) {
+          if (!user) {
+            window.netlifyIdentity.on("login", function() {
+              document.location.href = "/admin/";
+            });
+          }
+        });
+      }
     </script>
   </body>
 </html>
