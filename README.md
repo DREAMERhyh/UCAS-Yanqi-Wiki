@@ -10,7 +10,7 @@
 
 本项目旨在打造一个**结构化、可持续更新、客观信息与主观评价并存**的开源校园知识库。它不仅是一个静态网站，更是一个通过 CMS 系统支持所有同学轻松提交测评、共同维护的社区智库。
 
-## � 快速开始
+## 🚀 快速开始
 
 ```bash
 # 安装依赖
@@ -56,10 +56,11 @@ UCAS-Yanqi-Wiki/
 │   │           ├── 玫瑰荔枝/
 │   │           └── 厚椰拿铁/
 │   │
-│   ├── 生活设施/          # � 校园生存必备
+│   ├── 生活设施/          # 🚿 校园生存必备
 │   ├── 学习与课程/        # 📚 科研与学业
 │   └── 周边与出行/        # 🚌 走出校门
 │
+├── netlify.toml           # Netlify 部署配置
 ├── package.json           # Node.js 项目配置
 └── README.md              # 项目说明文档
 ```
@@ -107,7 +108,7 @@ UCAS-Yanqi-Wiki/
 
 本地开发时，点击顶部导航栏的【内容投稿】按钮，或直接访问 `/admin/` 路径即可进入 CMS 后台。
 
-> **注意**：本地开发环境仅用于验证 UI 界面，完整功能需要部署到 GitHub Pages 并配置 GitHub Gateway 认证。
+> **注意**：本地开发环境仅用于验证 UI 界面，完整功能需要部署到 Netlify 并配置 Netlify Identity 认证。
 
 ## 🛠️ 技术栈
 
@@ -115,7 +116,7 @@ UCAS-Yanqi-Wiki/
 |------|------|------|
 | 前端框架 | [VitePress](https://vitepress.dev/) | 基于 Vue 的极速静态站点生成器 |
 | 内容管理 | [Decap CMS](https://decapcms.org/) | 无代码表单提交，原 Netlify CMS |
-| 自动部署 | GitHub Actions | Push 代码自动构建发布至 GitHub Pages |
+| 自动部署 | [Netlify](https://www.netlify.com/) | 静态网站托管与 CI/CD |
 | 评价聚合 | Vue 组件 | 动态加载并展示用户评价 |
 
 ## ⚙️ 脚本命令
@@ -126,6 +127,62 @@ UCAS-Yanqi-Wiki/
 | `npm run docs:build` | 构建生产版本 |
 | `npm run docs:preview` | 预览构建结果 |
 | `npm run generate:reviews` | 生成评价数据 JSON |
+| `npm run build` | Netlify 部署构建命令 |
+
+## 🚀 Netlify 部署指南
+
+### 部署步骤
+
+1. **连接仓库**
+   - 登录 Netlify，点击 "Add new site" → "Import an existing project"
+   - 选择 GitHub，授权并选择你的仓库
+
+2. **配置构建**
+   - Netlify 会自动检测 `netlify.toml` 配置文件
+   - 构建命令：`npm run build`
+   - 发布目录：`docs/.vitepress/dist`
+
+3. **启用 Netlify Identity**
+   - 在 Netlify 控制台进入 "Identity" 页面
+   - 点击 "Enable Identity" 启用身份认证
+   - 配置登录方式（推荐 GitHub OAuth）
+
+4. **配置 Git Gateway**
+   - 进入 "Settings" → "Identity" → "Services"
+   - 启用 "Git Gateway"，连接到你的 GitHub 仓库
+   - 授予 Netlify 必要的权限
+
+### Netlify 配置文件
+
+项目根目录下的 `netlify.toml` 配置：
+
+```toml
+[build]
+  command = "npm run build"
+  publish = "docs/.vitepress/dist"
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/index.html"
+  status = 200
+```
+
+### CMS 配置
+
+确保 `docs/admin/config.yml` 中的后端配置正确：
+
+```yaml
+backend:
+  name: git-gateway
+  branch: main
+```
+
+### 部署日志
+
+如果遇到构建错误（如 `vitepress: Permission denied`），确保：
+- `package.json` 中有 `build` 脚本
+- 使用 `npm run build` 而非直接调用 `npx vitepress`
+- Node.js 版本正确（推荐 v20+）
 
 ## 📝 贡献指南
 
@@ -157,5 +214,5 @@ MIT License
 - ✅ 动态侧边栏生成
 - ✅ 用户评价系统
 - ✅ Decap CMS 集成
-- ✅ GitHub Actions 自动部署
+- ✅ Netlify 部署配置
 - 🚧 更多食堂和设施数据持续完善中

@@ -5,7 +5,8 @@
     "generate:reviews": "node scripts/generate-reviews.js",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "build": "npm run docs:build"
   },
   "devDependencies": {
     "@types/node": "^25.9.1",
