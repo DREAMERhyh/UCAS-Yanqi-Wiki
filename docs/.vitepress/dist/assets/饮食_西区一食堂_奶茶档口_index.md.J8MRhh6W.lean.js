@@ -1,0 +1,1 @@
+import{b as e,I as t,g as a}from"./chunks/framework.WGUzPprm.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"饮食/西区一食堂/奶茶档口/index.md","filePath":"饮食/西区一食堂/奶茶档口/index.md"}'),n={name:"饮食/西区一食堂/奶茶档口/index.md"};function r(o,s,c,d,i,p){return t(),a("div")}const f=e(n,[["render",r]]);export{m as __pageData,f as default};

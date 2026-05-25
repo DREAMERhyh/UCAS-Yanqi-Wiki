@@ -1,0 +1,1 @@
+import{b as e,I as t,g as i,j as r}from"./chunks/framework.WGUzPprm.js";const f=JSON.parse('{"title":"饮食","description":"","frontmatter":{},"headers":[],"relativePath":"饮食/index.md","filePath":"饮食/index.md"}'),l={name:"饮食/index.md"};function n(o,a,d,s,_,h){return t(),i("div",null,[...a[0]||(a[0]=[r("",4)])])}const p=e(l,[["render",n]]);export{f as __pageData,p as default};

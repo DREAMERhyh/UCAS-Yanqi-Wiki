@@ -1,0 +1,20 @@
+[
+  {
+    "filename": "20231102-李四.md",
+    "author": "李四",
+    "date": "2023-11-02",
+    "rating": 5,
+    "sweetness_choice": "少糖",
+    "ice_choice": "正常冰",
+    "content": "非常好喝，推荐给大家！"
+  },
+  {
+    "filename": "20231101-张三.md",
+    "author": "张三",
+    "date": "2023-11-01",
+    "rating": 4,
+    "sweetness_choice": "半糖",
+    "ice_choice": "少冰",
+    "content": "味道不错，咖啡香气很浓，下次还会再来！"
+  }
+]

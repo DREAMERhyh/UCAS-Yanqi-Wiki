@@ -1,0 +1,54 @@
+backend:
+  name: git-gateway
+  branch: main
+
+publish_mode: editorial_workflow
+media_folder: "docs/public/uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: "coffee-corner"
+    label: "咖啡角"
+    label_singular: "咖啡角"
+    folder: "docs/饮食/跨区域品牌与设备/咖啡角儿"
+    create: false
+    delete: false
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "位置", name: "location", widget: "string" }
+      - { label: "营业时间", name: "hours", widget: "string" }
+      - { label: "支付方式", name: "payment", widget: "list", default: ["校园卡", "支付宝", "微信"] }
+      - { label: "简介", name: "description", widget: "text" }
+
+  - name: "coffee-products"
+    label: "咖啡品类"
+    label_singular: "咖啡品类"
+    folder: "docs/饮食/跨区域品牌与设备/咖啡角儿"
+    create: true
+    delete: true
+    slug: "{{slug}}"
+    path: "{{slug}}/index"
+    fields:
+      - { label: "品类名称", name: "title", widget: "string" }
+      - { label: "价格", name: "price", widget: "string" }
+      - { label: "甜度选项", name: "sweetness", widget: "list", default: ["正常糖", "少糖", "半糖", "无糖"] }
+      - { label: "冰量选项", name: "ice", widget: "list", default: ["正常冰", "少冰", "去冰", "热"] }
+      - { label: "标签", name: "tags", widget: "list", default: ["咖啡"] }
+      - { label: "描述", name: "description", widget: "text" }
+
+  - name: "coffee-reviews"
+    label: "咖啡评价"
+    label_singular: "咖啡评价"
+    folder: "docs/饮食/跨区域品牌与设备/咖啡角儿"
+    create: true
+    delete: true
+    slug: "{{year}}{{month}}{{day}}-{{fields.author}}"
+    path: "{{fields.product}}/reviews/{{year}}{{month}}{{day}}-{{fields.author}}"
+    fields:
+      - { label: "所属品类", name: "product", widget: "relation", collection: "coffee-products", search_fields: ["title"], display_fields: ["title"], value_field: "title" }
+      - { label: "作者", name: "author", widget: "string" }
+      - { label: "评分", name: "rating", widget: "select", options: [1, 2, 3, 4, 5], default: 5 }
+      - { label: "甜度选择", name: "sweetness_choice", widget: "string" }
+      - { label: "冰量选择", name: "ice_choice", widget: "string" }
+      - { label: "评价日期", name: "date", widget: "datetime", default: "", format: "YYYY-MM-DD" }
+      - { label: "评价内容", name: "content", widget: "text" }

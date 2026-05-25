@@ -1,0 +1,1 @@
+import{b as e,I as t,g as r,j as i}from"./chunks/framework.WGUzPprm.js";const p=JSON.parse('{"title":"UCAS 雁栖湖校园指南","description":"","frontmatter":{},"headers":[],"relativePath":"index.md","filePath":"index.md"}'),l={name:"index.md"};function n(o,a,s,d,c,h){return t(),r("div",null,[...a[0]||(a[0]=[i("",6)])])}const f=e(l,[["render",n]]);export{p as __pageData,f as default};
