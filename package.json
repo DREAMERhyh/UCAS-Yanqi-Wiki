@@ -3,9 +3,9 @@
     "pregenerate": "node scripts/generate-reviews.js",
     "predocs:build": "node scripts/generate-reviews.js",
     "generate:reviews": "node scripts/generate-reviews.js",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs",
+    "docs:dev": "npx vitepress dev docs",
+    "docs:build": "npx vitepress build docs",
+    "docs:preview": "npx vitepress preview docs",
     "build": "npm run docs:build"
   },
   "devDependencies": {
