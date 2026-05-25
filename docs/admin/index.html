@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
     <title>内容管理</title>
-    <!-- 1. 引入 Netlify Identity Widget（修复空白页的关键） -->
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <!-- 2. 引入 Decap CMS -->
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
     <style>
-      /* 美化一下返回链接 */
       .back-home {
         padding: 10px 20px;
         background: #f5f5f5;
@@ -28,18 +23,30 @@
     </style>
   </head>
   <body>
-    <!-- 返回首页的链接 -->
     <div class="back-home">
       <a href="/">← 返回首页</a>
     </div>
 
-    <!-- Decap CMS 会自动读取 config.yml 并初始化 -->
+    <!-- Decap CMS 挂载点 -->
+    <div id="nc-root"></div>
+
+    <!-- 必须的脚本 -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
     <script>
-      // 3. 登录成功后自动跳转回 /admin/，防止白屏
+      // 初始化 CMS
+      CMS.init({
+        config: {
+          load_config_file: true,
+        },
+      });
+
+      // 登录跳转
       if (window.netlifyIdentity) {
-        window.netlifyIdentity.on("init", function(user) {
+        window.netlifyIdentity.on("init", function (user) {
           if (!user) {
-            window.netlifyIdentity.on("login", function() {
+            window.netlifyIdentity.on("login", function () {
               document.location.href = "/admin/";
             });
           }
