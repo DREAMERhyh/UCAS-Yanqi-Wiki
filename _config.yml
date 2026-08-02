@@ -1,0 +1,18 @@
+title: 雁栖湖校园指南
+description: 国科大雁栖湖校区生活指南
+baseurl: "/UCAS-Yanqi-Wiki"
+url: "https://dreamerhyh.github.io"
+
+markdown: kramdown
+permalink: pretty
+
+collections:
+  food:
+    output: true
+    permalink: /:collection/:path/
+
+defaults:
+  - scope:
+      path: "_food"
+    values:
+      layout: default
