@@ -1,0 +1,15 @@
+{
+  "name": "ucas-yanqi-wiki",
+  "version": "1.0.0",
+  "description": "国科大雁栖湖校区校园生活指南",
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs"
+  },
+  "devDependencies": {
+    "vite-plugin-static-copy": "^4.1.1",
+    "vitepress": "^1.0.0",
+    "vue": "^3.3.0"
+  }
+}
