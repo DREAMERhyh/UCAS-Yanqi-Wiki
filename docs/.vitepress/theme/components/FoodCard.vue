@@ -10,10 +10,12 @@ defineProps({
   isDrink: { type: Boolean, default: false }
 })
 
-defineEmits(['navigate'])
+const emit = defineEmits(['navigate'])
 
 function navigateTo(path) {
-  $emit('navigate', path)
+  if (path) {
+    emit('navigate', path)
+  }
 }
 
 function getTagClass(category) {

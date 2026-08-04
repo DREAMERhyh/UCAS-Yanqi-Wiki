@@ -1,7 +1,8 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, provide, inject } from 'vue'
 import { useRoute, useRouter } from 'vitepress'
 import { generateNavStructure } from '../utils/dataLoader'
+import NavItemRecursive from './NavItemRecursive.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -13,12 +14,12 @@ const activePath = ref('')
 // 初始化导航结构
 onMounted(async () => {
   navStructure.value = await generateNavStructure()
+  console.log('导航结构加载完成:', navStructure.value)
 })
 
 // 监听路由变化更新高亮
 watch(() => route.path, (newPath) => {
   activePath.value = newPath
-  // 自动展开当前路径对应的父级
   expandParents(newPath)
 }, { immediate: true })
 
@@ -39,24 +40,17 @@ function toggleExpand(itemPath) {
   }
 }
 
-function isExpanded(itemPath) {
-  return expandedItems.value.has(itemPath)
-}
-
-function isActive(itemPath) {
-  if (!itemPath) return false
-  return activePath.value === itemPath || activePath.value.startsWith(itemPath + '/')
-}
-
-function hasChildren(item) {
-  return item.items && item.items.length > 0
-}
-
 function navigateTo(path) {
   if (path !== route.path) {
     router.go(path)
   }
 }
+
+// Provide 状态给子组件
+provide('expandedItems', expandedItems)
+provide('activePath', activePath)
+provide('toggleExpand', toggleExpand)
+provide('navigateTo', navigateTo)
 </script>
 
 <template>
@@ -75,62 +69,6 @@ function navigateTo(path) {
     <div v-else class="nav-loading">加载中...</div>
   </nav>
 </template>
-
-<script>
-// 递归导航项组件 - 使用普通 script 导出
-import { computed, defineComponent } from 'vue'
-
-export default {
-  components: {
-    NavItemRecursive: defineComponent({
-      name: 'NavItemRecursive',
-      props: {
-        item: { type: Object, required: true },
-        parentPath: { type: String, required: true }
-      },
-      setup(props) {
-        const itemPath = computed(() => props.parentPath + '/' + props.item.text)
-        const hasChild = computed(() => props.item.items && props.item.items.length > 0)
-        const expanded = computed(() => isExpanded(itemPath.value))
-        const active = computed(() => isActive(props.item.link || itemPath.value))
-
-        function onClick() {
-          if (hasChild.value) {
-            toggleExpand(itemPath.value)
-          } else {
-            navigateTo(props.item.link || itemPath.value)
-          }
-        }
-
-        return { itemPath, hasChild, expanded, active, onClick }
-      },
-      template: `
-        <div class="nav-item">
-          <div
-            class="nav-item-toggle"
-            :class="{
-              active: active,
-              'has-children': hasChild
-            }"
-            @click="onClick"
-          >
-            <span>{{ item.text }}</span>
-            <span v-if="hasChild" class="expand-icon">▶</span>
-          </div>
-          <div v-if="hasChild" class="nav-item-children" :class="{ expanded: expanded }">
-            <NavItemRecursive
-              v-for="child in item.items"
-              :key="child.text"
-              :item="child"
-              :parent-path="itemPath"
-            />
-          </div>
-        </div>
-      `
-    })
-  }
-}
-</script>
 
 <style scoped>
 .nav-loading {

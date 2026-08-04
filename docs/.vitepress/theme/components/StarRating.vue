@@ -1,5 +1,7 @@
 <script setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
   rating: { type: Number, default: 0 },
   reviewsCount: { type: Number, default: 0 },
   showCount: { type: Boolean, default: true },

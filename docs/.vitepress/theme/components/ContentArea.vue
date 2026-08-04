@@ -1,9 +1,10 @@
 <script setup>
-import { ref, computed, onMounted, watch, defineComponent } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vitepress'
 import FoodCard from './FoodCard.vue'
 import WindowCard from './WindowCard.vue'
 import FloorCard from './FloorCard.vue'
+import BreadcrumbItem from './BreadcrumbItem.vue'
 import { loadPageData, getCategoryTagClass } from '../utils/dataLoader'
 
 const route = useRoute()
@@ -11,7 +12,7 @@ const router = useRouter()
 
 const pageData = ref(null)
 const breadcrumbs = ref([])
-const contentType = ref('') // 'root', 'canteens', 'drinks', 'canteen', 'floor', 'window', 'shop', 'category'
+const contentType = ref('')
 const currentLevel = ref({})
 
 // 页面加载时获取数据
@@ -26,25 +27,21 @@ watch(() => route.path, async () => {
 
 async function loadContent() {
   const path = route.path
-  // 解析路径确定当前层级
   const parsed = parsePath(path)
   currentLevel.value = parsed
   breadcrumbs.value = generateBreadcrumbs(parsed)
-
-  // 加载对应层级的数据
   pageData.value = await loadPageData(parsed)
   contentType.value = parsed.type
 }
 
 function parsePath(path) {
-  // 移除 base 路径前缀
   const basePath = '/UCAS-Yanqi-Wiki/'
   let cleanPath = path
   if (path.startsWith(basePath)) {
-    cleanPath = path.slice(basePath.length - 1) // 保留开头的 /
+    cleanPath = path.slice(basePath.length - 1)
   }
+  cleanPath = decodeURIComponent(cleanPath)
 
-  // 解析 food 路径
   if (cleanPath === '/food/' || cleanPath === '/food') {
     return { type: 'root', path: '/food/' }
   }
@@ -132,38 +129,19 @@ function generateBreadcrumbs(level) {
 function navigateTo(path) {
   router.go(path)
 }
-
-// BreadcrumbItem 子组件
-const BreadcrumbItem = defineComponent({
-  name: 'BreadcrumbItem',
-  props: {
-    crumb: { type: Object, required: true },
-    isLast: { type: Boolean, required: true }
-  },
-  emits: ['click'],
-  setup(props, { emit }) {
-    function onClick() {
-      if (!props.isLast) {
-        emit('click', props.crumb.path)
-      }
-    }
-    return { onClick }
-  },
-  template: `
-    <span class="breadcrumb-item">
-      <a v-if="!isLast" class="breadcrumb-link" @click="onClick">{{ crumb.text }}</a>
-      <span v-else class="breadcrumb-current">{{ crumb.text }}</span>
-      <span v-if="!isLast" class="breadcrumb-separator">/</span>
-    </span>
-  `
-})
 </script>
 
 <template>
   <div class="custom-main-content">
     <!-- 面包屑导航 -->
     <nav class="breadcrumb" aria-label="面包屑">
-      <BreadcrumbItem v-for="(crumb, index) in breadcrumbs" :key="crumb.path" :crumb="crumb" :is-last="index === breadcrumbs.length - 1" @click="navigateTo" />
+      <BreadcrumbItem
+        v-for="(crumb, index) in breadcrumbs"
+        :key="crumb.path"
+        :crumb="crumb"
+        :is-last="index === breadcrumbs.length - 1"
+        @click="navigateTo"
+      />
     </nav>
 
     <!-- 搜索和排序栏 -->
@@ -181,35 +159,17 @@ const BreadcrumbItem = defineComponent({
 
     <!-- 内容区域 -->
     <div class="card-grid" v-if="pageData">
-      <!-- 根级别：食堂、饮品两大板块 -->
       <FloorCard v-if="contentType === 'root'" :items="pageData" @navigate="navigateTo" />
-
-      <!-- 食堂列表 -->
       <FloorCard v-else-if="contentType === 'canteens'" :items="pageData" @navigate="navigateTo" />
-
-      <!-- 单个食堂的楼层列表 -->
       <FloorCard v-else-if="contentType === 'canteen'" :items="pageData" @navigate="navigateTo" :show-icon="true" />
-
-      <!-- 楼层的窗口列表 -->
       <WindowCard v-else-if="contentType === 'floor'" :items="pageData" @navigate="navigateTo" />
-
-      <!-- 窗口的菜品列表 -->
       <FoodCard v-else-if="contentType === 'window'" :items="pageData" :context="currentLevel" />
-
-      <!-- 饮品店列表 -->
       <FloorCard v-else-if="contentType === 'drinks'" :items="pageData" @navigate="navigateTo" :icon="'☕'" />
-
-      <!-- 单个饮品店的品类列表 -->
       <FloorCard v-else-if="contentType === 'shop'" :items="pageData" @navigate="navigateTo" :show-icon="true" />
-
-      <!-- 品类下的饮品列表 -->
       <FoodCard v-else-if="contentType === 'category'" :items="pageData" :context="currentLevel" is-drink />
     </div>
 
-    <!-- 加载状态 -->
     <div v-else-if="pageData === null" class="loading">加载中...</div>
-
-    <!-- 空状态 -->
     <div v-else class="empty-state">
       <p>暂无数据</p>
     </div>
