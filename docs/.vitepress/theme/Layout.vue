@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, computed } from 'vue'
 import { useData, useRoute } from 'vitepress'
 import SidebarNav from './components/SidebarNav.vue'
 import ContentArea from './components/ContentArea.vue'
@@ -7,6 +7,12 @@ import ContentArea from './components/ContentArea.vue'
 const { frontmatter } = useData()
 const route = useRoute()
 const isSidebarOpen = ref(false)
+
+// 判断是否在 food 路径下 - SSR 兼容
+const isFoodRoute = computed(() => {
+  const path = route.path
+  return path.startsWith('/food') || path.startsWith('/UCAS-Yanqi-Wiki/food')
+})
 
 function toggleSidebar() {
   isSidebarOpen.value = !isSidebarOpen.value
@@ -16,7 +22,6 @@ function closeSidebar() {
   isSidebarOpen.value = false
 }
 
-// 监听路由变化关闭侧边栏（移动端）
 onMounted(() => {
   // 可以在这里添加键盘快捷键等
 })
@@ -55,7 +60,8 @@ onUnmounted(() => {
 
     <!-- 主内容区 -->
     <main class="custom-main">
-      <ContentArea />
+      <ContentArea v-if="isFoodRoute" />
+      <slot v-else />
     </main>
   </div>
 </template>
